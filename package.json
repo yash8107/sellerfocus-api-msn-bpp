@@ -1,0 +1,31 @@
+{
+  "name": "sellerfocus-api-msn-bpp",
+  "version": "1.0.0",
+  "description": "This is code of encription base",
+  "homepage": "https://github.com/yash8107/sellerfocus-api-msn-bpp#readme",
+  "bugs": {
+    "url": "https://github.com/yash8107/sellerfocus-api-msn-bpp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yash8107/sellerfocus-api-msn-bpp.git"
+  },
+  "license": "ISC",
+  "author": "Yash Singhal",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "base64-js": "^1.5.1",
+    "blake2b": "^2.1.4",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "libsodium-wrappers": "^0.7.15",
+    "moment": "^2.30.1"
+  }
+}
