@@ -7,8 +7,6 @@ router.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.path}`);
     next();
 });
-// Site Verification Route
-router.get('/ondc-site-verification.html', ondcRegistrationController.siteVerification);
 
 // Key Generation
 router.post('/generate-keys', ondcRegistrationController.generateKeys);
