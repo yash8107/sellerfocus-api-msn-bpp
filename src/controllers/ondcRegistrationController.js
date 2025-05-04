@@ -160,10 +160,12 @@ class ONDCRegistrationController {
     try {
       console.log('Site Verification Endpoint Called');
       // Load keys from JSON file
-      const keysPath = path.join(__dirname, '..', '..', 'ondc-keys.json');
-      const keysData = await fs.readFile(keysPath, 'utf8');
-      const keys = JSON.parse(keysData);
+      // Use environment variables for keys
+      const signingPrivateKey = process.env.ONDC_SIGNING_PRIVATE_KEY;
 
+      if (!signingPrivateKey) {
+        throw new Error('No signing private key found. Generate keys first.');
+      }
       // Generate a unique request ID (you can modify this logic as needed)
       const requestId = uuidv4();
 
@@ -171,7 +173,7 @@ class ONDCRegistrationController {
       await sodium.ready;
       const signatureBytes = sodium.crypto_sign_detached(
         Buffer.from(requestId),
-        sodium.from_base64(keys.signing.privateKey)
+        sodium.from_base64(signingPrivateKey)
       );
 
       // Convert signature to base64
