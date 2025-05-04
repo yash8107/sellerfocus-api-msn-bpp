@@ -16,7 +16,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "helmet": "^8.1.0",
     "libsodium-wrappers": "^0.7.15",
     "moment": "^2.30.1",
+    "nodemon": "^3.1.10",
     "uuid": "^11.1.0"
   }
 }

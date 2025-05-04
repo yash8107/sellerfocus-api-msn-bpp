@@ -38,6 +38,21 @@ class ONDCKeyGenerator {
     
         return keyPairs;
       }
+
+    async decryptChallenge(encryptedChallenge, encryptionPrivateKey) {
+      await sodium.ready;
+  
+      console.log("Encrypted challenge:", encryptedChallenge);
+      console.log("Encryption private key:", encryptionPrivateKey);
+      // Decrypt challenge using encryption private key
+      const decryptedChallenge = sodium.crypto_box_seal_open(
+        sodium.from_base64(encryptedChallenge),
+        sodium.from_base64(encryptionPrivateKey)
+      );
+  
+      console.log("Decrypted challenge:", Buffer.from(decryptedChallenge).toString());
+      return Buffer.from(decryptedChallenge).toString();
     }
+} 
 
 module.exports = new ONDCKeyGenerator();
