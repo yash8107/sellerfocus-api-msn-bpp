@@ -2,11 +2,8 @@ const keyGenerator = require('../utils/keyGenerator');
 const moment = require('moment');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
-const crypto = require('crypto');
 const sodium = require('libsodium-wrappers');
-const fs = require('fs').promises;
-const path = require('path');
-const authHeaderGenerator = require('../utils/authHeaderGenerator');
+const createAuthorizationHeader = require('../utils/createAuthHeader');
 
 class ONDCRegistrationController {
   async generateKeys(req, res) {
@@ -146,9 +143,29 @@ class ONDCRegistrationController {
       );
 
       // Respond with decrypted challenge
-      res.json({
+      const responsePayload = {
         answer: decryptedChallenge
-      });
+      };
+
+      // Generate authorization header
+      const authHeader = createAuthorizationHeader({ body: responsePayload });
+
+      // Prepare request configuration
+      const requestConfig = {
+        method: 'post',
+        url: process.env.ONDC_REGISTRY_URL + '/on_subscribe',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authHeader
+        },
+        data: responsePayload
+      };
+
+      // Make the request
+      const response = await axios(requestConfig);
+
+      // Return successful response
+      res.json(response.data);
     } catch (error) {
       res.status(500).json({
         error: 'Callback processing failed',
