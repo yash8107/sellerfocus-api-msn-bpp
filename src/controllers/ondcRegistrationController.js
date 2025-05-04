@@ -125,13 +125,41 @@ class ONDCRegistrationController {
     }
   }
 
+  async loadKeys() {
+    try {
+      // Use hardcoded keys from .env
+      const keys = {
+        unique_key_id: process.env.ONDC_UNIQUE_KEY_ID,
+        signing: {
+          // Note: We don't have a signing public key in .env, so we'll use the encryption public key
+          publicKey: process.env.ONDC_SIGNING_PUBLIC_KEY
+        },
+        encryption: {
+          publicKey: process.env.ONDC_ENCRYPTION_PUBLIC_KEY
+        },
+        validFrom: moment().toISOString(),
+        validUntil: moment().add(1, 'year').toISOString()
+      };
+
+      // Validate key presence
+      if (!keys.unique_key_id || !keys.signing.publicKey || !keys.encryption.publicKey) {
+        throw new Error('Missing required keys in environment configuration');
+      }
+      console.log("Keys loaded successfully:", keys);
+      return keys;
+    } catch (error) {
+      console.error('Error loading keys:', error);
+      return null;
+    }
+  }
+
   async onSubscribeCallback(req, res) {
     try {
       console.log("Callback received from ONDC:", req.body);
       const { subscriber_id, challenge } = req.body;
 
       // Load keys
-      const keys = await keyGenerator.loadKeys();
+      const keys = await this.loadKeys();
       if (!keys) {
         return res.status(400).json({ error: 'No keys found' });
       }
