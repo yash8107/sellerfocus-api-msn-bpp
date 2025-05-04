@@ -1,5 +1,6 @@
 const keyGenerator = require('../utils/keyGenerator');
 const moment = require('moment');
+const axios = require('axios');
 
 class ONDCRegistrationController {
     async generateKeys(req, res) {
@@ -12,7 +13,9 @@ class ONDCRegistrationController {
           message: 'Keys generated successfully',
           unique_key_id: keyPairs.unique_key_id,
           signing_public_key: keyPairs.signing.publicKey,
+          signing_private_key: keyPairs.signing.privateKey,
           encryption_public_key: keyPairs.encryption.publicKey,
+          encryption_private_key: keyPairs.encryption.privateKey,
           valid_from: now.toISOString(),
         //   valid_from: keyPairs.validFrom,
           valid_until: now.add(1, 'year').toISOString()
@@ -25,6 +28,99 @@ class ONDCRegistrationController {
         });
       }
     }
+
+    async subscribe(req, res) {
+        try {
+          // Load generated keys
+          const keys = await keyGenerator.loadKeys();
+          if (!keys) {
+            return res.status(400).json({ error: 'No keys generated' });
+          }
+    
+          // Prepare subscription payload
+          // const subscriptionPayload = {
+          //   context: {
+          //     operation: {
+          //       ops_no: req.body.ops_no || 3 // Default to new entity registration
+          //     }
+          //   },
+          //   message: {
+          //     request_id: req.body.request_id || keys.unique_key_id,
+          //     timestamp: new Date().toISOString(),
+          //     entity: {
+          //       // Add entity details from request or use defaults
+          //       subscriber_id: ondcConfig.subscriber.id,
+          //       country: ondcConfig.subscriber.country,
+          //       callback_url: ondcConfig.subscriber.callbackUrl,
+          //       key_pair: {
+          //         signing_public_key: keys.signing.publicKey,
+          //         encryption_public_key: keys.encryption.publicKey,
+          //         valid_from: keys.validFrom,
+          //         valid_until: keys.validUntil
+          //       }
+          //     },
+          //     network_participant: [{
+          //       subscriber_url: ondcConfig.subscriber.url,
+          //       domain: ondcConfig.subscriber.domain,
+          //       type: ondcConfig.subscriber.type,
+          //       city_code: [ondcConfig.subscriber.cityCode]
+          //     }]
+          //   }
+          // };
+    
+          // Send subscription request to ONDC registry
+          const response = await axios.post(
+            ondcConfig.registry.subscribeUrl, 
+            req.body,
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+    
+          res.json({
+            message: 'Subscription request sent',
+            response: response.data
+          });
+        } catch (error) {
+          console.error('Subscription Error:', error.response ? error.response.data : error.message);
+          res.status(500).json({ 
+            error: 'Subscription failed', 
+            details: error.response ? error.response.data : error.message 
+          });
+        }
+    }
+
+    async lookup(req, res) {
+        try {
+          // const lookupPayload = {
+          //   subscriber_id: req.body.subscriber_id,
+          //   country: req.body.country || ondcConfig.subscriber.country,
+          //   city: req.body.city || ondcConfig.subscriber.cityCode,
+          //   domain: req.body.domain || ondcConfig.subscriber.domain,
+          //   type: req.body.type || ondcConfig.subscriber.type
+          // };
+    
+          const response = await axios.post(
+            // ondcConfig.registry.lookupUrl,
+            req.body,
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+    
+          res.json(response.data);
+        } catch (error) {
+          console.error('Lookup Error:', error.response ? error.response.data : error.message);
+          res.status(500).json({ 
+            error: 'Lookup failed', 
+            details: error.response ? error.response.data : error.message 
+          });
+        }
+      }
 
 }
 module.exports = new ONDCRegistrationController();
