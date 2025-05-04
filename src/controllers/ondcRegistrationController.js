@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const sodium = require('libsodium-wrappers');
 const fs = require('fs').promises;
 const path = require('path');
+const authHeaderGenerator = require('../utils/authHeaderGenerator');
 
 class ONDCRegistrationController {
   async generateKeys(req, res) {
