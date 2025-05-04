@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 require("dotenv").config();
 const ondcRoutes = require('./routes/ondcRoutes');
+const ondcRegistrationController = require('./controllers/ondcRegistrationController');
 const app = express();
 
 // Middleware
@@ -17,6 +18,8 @@ app.get('/', (req,res) => {
 })
 // ONDC Routes
 app.use('/ondc', ondcRoutes);
+// Site Verification Route
+app.get('/ondc-site-verification.html', ondcRegistrationController.siteVerification);
 
 // 404 Handler
 app.use((req, res, next) => {

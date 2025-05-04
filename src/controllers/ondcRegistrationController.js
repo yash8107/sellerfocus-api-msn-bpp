@@ -175,7 +175,7 @@ class ONDCRegistrationController {
       );
 
       // Convert signature to base64
-      const signedContent = sodium.to_base64(signatureBytes);
+      const SIGNED_UNIQUE_REQ_ID = sodium.to_base64(signatureBytes);
 
       // HTML template for verification
       const htmlFile = `
@@ -184,7 +184,7 @@ class ONDCRegistrationController {
   <head>
     <meta
       name="ondc-site-verification"
-      content="${signedContent}"
+      content="${SIGNED_UNIQUE_REQ_ID}"
     />
     <title>ONDC Site Verification</title>
   </head>
