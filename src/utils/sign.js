@@ -1,17 +1,11 @@
-const sodium = require('libsodium-wrappers');
+// Sign Message with Private Key
+const nacl = require('tweetnacl');
 
-function signMessage(signingString, privateKey) {
-  // Convert signing string to buffer
-  const signingBuffer = Buffer.from(signingString);
-  
-  // Sign the message
-  const signatureBytes = sodium.crypto_sign_detached(
-    signingBuffer,
-    sodium.from_base64(privateKey)
-  );
-
-  // Convert signature to base64
-  return sodium.to_base64(signatureBytes);
+function signMessage(signingString, privateKeyBase64) {
+  const privateKey = Buffer.from(privateKeyBase64, 'base64');
+  const signedMsg = nacl.sign.detached(Buffer.from(signingString), privateKey);
+  console.log("Signed message:", Buffer.from(signedMsg).toString('base64'));
+  return Buffer.from(signedMsg).toString('base64');
 }
 
 module.exports = { signMessage };
