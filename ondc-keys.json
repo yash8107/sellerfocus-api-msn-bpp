@@ -1,0 +1,13 @@
+{
+  "unique_key_id": "e3569196-4f44-4372-841d-3d7e22660a4d",
+  "signing": {
+    "privateKey": "oHz2vE4wppn6k9lfqFcQvkeVM1eGC9t+nM2mpCFM2fOEynBJ62t8SxUEaH5pv0YecEgBCkFAXUVXjpnuzxn+gQ==",
+    "publicKey": "hMpwSetrfEsVBGh+ab9GHnBIAQpBQF1FV46Z7s8Z/oE="
+  },
+  "encryption": {
+    "privateKey": "iGpIIb7MJmrGWbaNg6N46KJHIPqUMpXy5USyK/NJ4Cg=",
+    "publicKey": "nIOPXDJwoipiJ1FWV93j+pe7M6qTEwp7qgDnANQ7IwA="
+  },
+  "validFrom": "2025-05-05T06:47:29.459Z",
+  "validUntil": "2026-05-05T06:47:29.461Z"
+}

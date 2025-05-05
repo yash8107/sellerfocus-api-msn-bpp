@@ -22,12 +22,12 @@ class ONDCKeyGenerator {
         const keyPairs = {
           unique_key_id: uuidv4(),
           signing: {
-            privateKey: sodium.to_base64(signingKeyPair.privateKey),
-            publicKey: sodium.to_base64(signingKeyPair.publicKey)
+            privateKey: sodium.to_base64(signingKeyPair.privateKey, sodium.base64_variants.ORIGINAL),
+            publicKey: sodium.to_base64(signingKeyPair.publicKey, sodium.base64_variants.ORIGINAL)
           },
           encryption: {
-            privateKey: sodium.to_base64(encryptionKeyPair.privateKey),
-            publicKey: sodium.to_base64(encryptionKeyPair.publicKey)
+            privateKey: sodium.to_base64(encryptionKeyPair.privateKey, sodium.base64_variants.ORIGINAL),
+            publicKey: sodium.to_base64(encryptionKeyPair.publicKey, sodium.base64_variants.ORIGINAL)
           },
           validFrom: moment().toISOString(),
           validUntil: moment().add(1, 'year').toISOString()
@@ -35,9 +35,24 @@ class ONDCKeyGenerator {
     
         // Save keys to a JSON file
         await fs.writeFile(this.keysPath, JSON.stringify(keyPairs, null, 2));
+
+        // Store keys in .env file
+        await this.storeKeysInEnv(keyPairs);
     
         return keyPairs;
       }
+
+      async storeKeysInEnv(keyPairs) {
+        const envContent = `
+ONDC_UNIQUE_KEY_ID=${keyPairs.unique_key_id}
+ONDC_SIGNING_PUBLIC_KEY=${keyPairs.signing.publicKey}
+ONDC_SIGNING_PRIVATE_KEY=${keyPairs.signing.privateKey}
+ONDC_ENCRYPTION_PUBLIC_KEY=${keyPairs.encryption.publicKey}
+ONDC_ENCRYPTION_PRIVATE_KEY=${keyPairs.encryption.privateKey}
+`;
+
+        await fs.writeFile(path.join(__dirname, '..', '..', '.env'), envContent, { flag: 'w' });
+    }
 
     async decryptChallenge(encryptedChallenge, encryptionPrivateKey) {
       await sodium.ready;
