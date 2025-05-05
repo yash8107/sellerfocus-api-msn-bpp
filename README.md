@@ -1,25 +1,30 @@
-# sellerfocus-api-msn-bpp
+ONDC Key Generation Module
+This module provides a robust and compliant mechanism for generating cryptographic key pairs for ONDC (Open Network for Digital Commerce) network participants. It supports the creation of secure Ed25519 signing keys and X25519 encryption keys required for participant registration and secure communication within the network.
 
-
-ONDC Key Generation README
-Overview
-This module provides a robust key generation mechanism for ONDC (Open Network for Digital Commerce) network participants, focusing on creating cryptographically secure Ed25519 signing and X25519 encryption key pairs.
-
-Key Generation Specifications
+🔐 Key Generation Specifications
 Cryptographic Algorithms
-Signing Key: Ed25519
-Encryption Key: X25519
+Signing Key: Ed25519 (RFC 8032)
+
+Encryption Key: X25519 (RFC 7748)
+
 Key Pair Generation Process
-Generate Ed25519 signing key pair (32-byte keys)
-Generate X25519 encryption key pair (32-byte keys)
+Generate Ed25519 signing key pair (32-byte)
+
+Generate X25519 encryption key pair (32-byte)
+
 Encode X25519 public key in ASN.1 DER format
-Store keys securely in JSON and environment files
-Key Storage Locations
-JSON File: ondc-keys.json
-Environment File: .env
-Key Pair Structure
+
+Store keys securely in .json and .env files
+
+📁 Key Storage
+
+File	Description
+ondc-keys.json	Contains generated key pairs in structured JSON format
+.env	Stores environment variables for accessing key details securely
+🔑 Key Pair Structure
 json
-CopyInsert
+Copy
+Edit
 {
   "unique_key_id": "<UUID>",
   "signing": {
@@ -33,33 +38,59 @@ CopyInsert
   "validFrom": "<ISO Timestamp>",
   "validUntil": "<ISO Timestamp>"
 }
-X25519 Public Key Encoding
-Encoding: ASN.1 DER
-Format Details:
+🧬 X25519 Public Key DER Encoding
+Format: ASN.1 DER
+
+Structure:
+
 0x30: SEQUENCE
+
 0x2A: Total length (42 bytes)
-0x2B, 0x65, 0x70: OID for X25519 (1.3.101.110)
+
+0x2B 0x65 0x70: OID for X25519 (1.3.101.110)
+
 0x03: BIT STRING
-0x21: Length 33 bytes
+
+0x21: Length: 33 bytes
+
 0x00: 0 unused bits
-Security Recommendations
+
+Followed by: 32-byte public key
+
+🔒 Security Recommendations
 Keep private keys confidential
+
 Rotate keys periodically
-Use secure random number generation
-Protect key storage mechanisms
-Dependencies
-libsodium-wrappers: Cryptographic operations
-uuid: Unique key ID generation
-Usage Example
+
+Use secure random number generators
+
+Protect .env and ondc-keys.json using access controls
+
+⚙️ Dependencies
+libsodium-wrappers: For secure cryptographic operations
+
+uuid: To generate unique key identifiers
+
+🧪 Usage Example
 javascript
-CopyInsert
+Copy
+Edit
 const keyGenerator = require('./keyGenerator');
 
-// Generate new key pair
+// Generate a new key pair
 const keyPairs = await keyGenerator.generateKeyPair();
-Compliance
-Adheres to ONDC registry key submission requirements
-Follows RFC 8032 (Ed25519) and RFC 7748 (X25519) specifications
-Error Handling
+console.log(keyPairs);
+✅ Compliance
+Fulfills ONDC Registry public key submission requirements
+
+Conforms to:
+
+RFC 8032 – Ed25519
+
+RFC 7748 – X25519
+
+⚠️ Error Handling
 Comprehensive error logging
-Secure key generation failure management
+
+Handles failures gracefully during secure key generation
+
